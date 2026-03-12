@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+echo "Delete Stack via CloudFormation..."
+
+STACK_NAME="cfn-s3-mexi"
+
+aws cloudformation delete-stack \
+--stack-name $STACK_NAME \
+--region us-west-2
