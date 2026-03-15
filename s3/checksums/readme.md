@@ -33,3 +33,7 @@ aws s3api put-object \
 --checksum-algorithm="SHA1" \
 --checksum-sha1="oW3rLsU0SuM/zjpG1izn4erJUw8="
 ```
+
+## Clean up
+aws s3 rm s3://checksums-examples-ab-234/myfile.txt
+aws s3 rb s3://checksums-examples-ab-234
