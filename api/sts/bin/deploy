@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+echo "Deploying stack..."
+
+aws cloudformation deploy \
+--template-file template.yaml \
+--stack-name sts-encryption-client-stack \
+--capabilities CAPABILITY_IAM
+
+echo "Stack deployed"
