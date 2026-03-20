@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Launch a new EC2 instance for use with testing VPCs
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t3.micro
+  VPCID:
+    Type: String
+    Default: vpc-04c9d94a81a12abdb
+  ImageID:
+    Type: String
+    Default: ami-05024c2628f651b80
+  SubnetID:
+    Type: String
+    Default: subnet-0bc7e28bbfb219ae1
+Resources:
+  MyEC2Instance: 
+    Type: AWS::EC2::Instance
+    Properties: 
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      InstanceType: !Ref InstanceType
+      ImageID: !Ref ImageID
+      NetworkInterfaces:
+        - DeviceIndex: 0
+          SubnetId: !Ref SubnetID
+          AssociatePublicIpAddress: true
+          GroupSet:
+            - !GetAtt SG.GroupId
+          DeleteOnTermination: true
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          systemctl enable httpd
+          echo "<html><body><h1>Hello, World!</h1></body></html>" > /var/www/html/index.html
+
+  
+  SG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow all traffic
+      VpcId: !Ref VPCID
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
