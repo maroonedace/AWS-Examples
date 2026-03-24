@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  # us-east-1
+  ImageID:
+    Type: String
+    Default: ami-02dfbd4ff395f2a1b
+  InstanceType:
+    Type: String
+    Default: t3.micro
+  SubnetID:
+    Type: String
+    Default: subnet-061676312117616b1
+  VPCID:
+    Type: String
+    Default: vpc-061676312117616b1
+Resources:
+  MyEC2Instance: 
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: !Ref ImageID
+      InstanceType: !Ref InstanceType
+      NetworkInterfaces:
+        - DeviceIndex: 0
+          SubnetId: !Ref SubnetID
+          AssociatePublicIpAddress: true
+          GroupSet:
+            - !GetAtt SG.GroupId
+          DeleteOnTermination: true
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          systemctl enable httpd
+          echo "<html><body><h1>Hello, World!</h1></body></html>" > /var/www/html/index.html
+  SG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow all traffic
+      VpcId: !Ref VPCID
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
