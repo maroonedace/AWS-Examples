@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+QUEUE_URL="https://sqs.us-west-2.amazonaws.com/123456789012/MyQueue"
+
+aws sqs send-message \ 
+--queue-url $QUEUE_URL \
+--message-body "Information" \
+--delay-seconds 0 \
+--attribute-names file://send-message.json
