@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+
+root_path=$(realpath .)
+
+template_path="${root_path}/template.yaml"
+
+sam build -template-file $template_path
